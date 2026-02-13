@@ -7,11 +7,7 @@ export const catchAsync = (fn: RequestHandler) => {
       await fn(req, res, next);
     } catch (error: any) {
       console.log(error);
-      res.status(500).json({
-        success: false,
-        message: "Specialty Creation Failed",
-        error: error.message,
-      });
+      next(error);
     }
   };
 };
