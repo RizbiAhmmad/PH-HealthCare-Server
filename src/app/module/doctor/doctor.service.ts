@@ -1,4 +1,6 @@
+import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import AppError from "../../errorHelpers/AppError";
 import { prisma } from "../../lib/prisma";
 import { IUpdateDoctorPayload } from "./doctor.interface";
 
@@ -60,7 +62,8 @@ const updateDoctor = async (id: string, payload: IUpdateDoctorPayload) => {
     })
 
     if (!isDoctorExist) {
-         throw new Error( "Doctor not found");
+        //  throw new Error( "Doctor not found");
+        throw new AppError(status.NOT_FOUND,"Doctor not found")
     }
 
     const { doctor: doctorData, specialties } = payload;
@@ -121,7 +124,8 @@ const deleteDoctor = async (id: string) => {
     })
 
     if (!isDoctorExist) {
-        throw new Error( "Doctor not found");
+        // throw new Error( "Doctor not found");
+        throw new AppError(status.NOT_FOUND,"Doctor not found")
     }
 
     await prisma.$transaction(async (tx) => {
