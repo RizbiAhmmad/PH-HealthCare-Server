@@ -1,12 +1,20 @@
+
 import { Router } from "express";
-import { SpecialtyCntroller } from "./specialty.controller";
-import { checkAuth } from "../../middleware/checkAuth";
 import { Role } from "../../../generated/prisma/enums";
+import { multerUpload } from "../../config/multer.config";
+import { checkAuth } from "../../middleware/checkAuth";
+import { validateRequest } from "../../middleware/validateRequest";
+import { SpecialtyController } from "./specialty.controller";
+import { SpecialtyValidation } from "./specialty.validation";
 
 const router = Router();
 
-router.post("/", SpecialtyCntroller.createSpecialty);
-router.get("/", SpecialtyCntroller.getAllSpecialties);
-router.delete("/:id",checkAuth( Role.PATIENT), SpecialtyCntroller.deleteSpecialties);
+router.post('/', 
+    // checkAuth(Role.ADMIN, Role.SUPER_ADMIN), 
+    multerUpload.single("file"), 
+    validateRequest(SpecialtyValidation.createSpecialtyZodSchema),
+    SpecialtyController.createSpecialty);
+router.get('/', SpecialtyController.getAllSpecialties);
+router.delete('/:id', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), SpecialtyController.deleteSpecialty);
 
-export const SpecialtyRouter = router;
+export const SpecialtyRoutes = router;
